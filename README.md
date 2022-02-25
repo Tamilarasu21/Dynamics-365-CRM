@@ -1,6 +1,6 @@
-# Dynamics-365-CRM
+# Dynamics-365-CRM Javascript and Plug-in
 
-References:
+### References:
 https://crm365blog.wordpress.com/2018/05/29/get-set-field-values-in-c-javascript-and-utility-functions/
 
 https://vblogs.in/get-set-columnfield-values-using-c-plugin-in-d365-ce/
@@ -22,3 +22,9 @@ https://itsfascinating.com/d365/dynamics-365-how-to-set-and-get-fields-using-jav
 https://carldesouza.com/get-and-set-field-values-using-formcontext-and-javascript-with-dynamics-365/
 
 https://docs.microsoft.com/en-us/powerapps/developer/model-driven-apps/clientapi/reference/attributes/getvalue
+
+https://docs.microsoft.com/en-us/dynamics365/customerengagement/on-premises/customize/create-business-rules-recommendations-apply-logic-form?view=op-9-1
+
+https://docs.microsoft.com/en-us/powerapps/developer/data-platform/tutorial-write-plug-in
+
+https://docs.microsoft.com/en-us/dynamics365/customerengagement/on-premises/developer/download-tools-nuget?view=op-9-1
