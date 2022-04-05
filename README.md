@@ -1,6 +1,8 @@
 # Dynamics-365-CRM Javascript and Plug-in
 
 ### References:
+https://carldesouza.com/dynamics-crm/
+
 https://crm365blog.wordpress.com/2018/05/29/get-set-field-values-in-c-javascript-and-utility-functions/
 
 https://vblogs.in/get-set-columnfield-values-using-c-plugin-in-d365-ce/
