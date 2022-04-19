@@ -12,12 +12,18 @@ function makePending(selectedIds) {
           var changeStatus = {
             test_status: 0,
           };
-          for(var j=0;j<selectedIds.length;j++){
-            Xrm.WebApi.updateRecord(logicalName, selectedIds[j].Id, changeStatus).then(
+          for (var j = 0; j < selectedIds.length; j++) {
+            Xrm.WebApi.updateRecord(
+              logicalName,
+              selectedIds[j].Id,
+              changeStatus
+            ).then(
               function success(result) {
                 // Show Account GUID
                 Xrm.Utility.alertDialog(
-                  "Account with ID: " + result.id + " is updated to"+result.test_status,
+                  "Account with ID: " +
+                    result.id +
+                    " is updated",
                   null
                 );
               },
@@ -27,12 +33,16 @@ function makePending(selectedIds) {
               }
             );
           }
-        }else if (result.test_status == 0) {
+        } else if (result.test_status == 0) {
           var changeStatus = {
             test_status: 1,
           };
-          for(var j=0;j<selectedIds.length;j++){
-            Xrm.WebApi.updateRecord(logicalName, selectedIds[j].Id, changeStatus).then(
+          for (var j = 0; j < selectedIds.length; j++) {
+            Xrm.WebApi.updateRecord(
+              logicalName,
+              selectedIds[j].Id,
+              changeStatus
+            ).then(
               function success(result) {
                 // Show Account GUID
                 Xrm.Utility.alertDialog(
@@ -46,12 +56,16 @@ function makePending(selectedIds) {
               }
             );
           }
-        }else if (result.test_status == 1) {
+        } else if (result.test_status == 1) {
           var changeStatus = {
             test_status: 2,
           };
-          for(var j=0;j<selectedIds.length;j++){
-            Xrm.WebApi.updateRecord(logicalName, selectedIds[j].Id, changeStatus).then(
+          for (var j = 0; j < selectedIds.length; j++) {
+            Xrm.WebApi.updateRecord(
+              logicalName,
+              selectedIds[j].Id,
+              changeStatus
+            ).then(
               function success(result) {
                 // Show Account GUID
                 Xrm.Utility.alertDialog(
@@ -72,4 +86,4 @@ function makePending(selectedIds) {
       }
     );
   }
-}
+} 
