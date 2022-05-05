@@ -19,13 +19,11 @@ namespace EmailDuplicate
         {
             IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
             ITracingService tracingService = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
-
             IOrganizationServiceFactory servicefactory =
              (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             IOrganizationService service =
             servicefactory.CreateOrganizationService(context.UserId);
 
-            //region working code
             if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity)
             {
                 Entity entity = (Entity)context.InputParameters["Target"];
@@ -46,6 +44,7 @@ namespace EmailDuplicate
                         QueryExpression contactQuery = new QueryExpression("test_student");
                         contactQuery.ColumnSet = new ColumnSet("test_name");
                         contactQuery.Criteria.AddCondition("test_name", ConditionOperator.Equal, email);
+                        // RetrieveMultiple using query                      
                         EntityCollection contactColl = service.RetrieveMultiple(contactQuery);
                         if (contactColl.Entities.Count > 0)
                         {
@@ -59,7 +58,6 @@ namespace EmailDuplicate
                     throw (ex);
                 }
             }
-            //endregion
         }
     }
 }

@@ -47,7 +47,7 @@ function setCountry(executionContext) {
       for (var i = 0; i < result.entities.length; i++) {
         var p = result.entities[i];
         var forState = result.entities[i].test_state_name;
-        if (state != null && state == forState) {
+        if (state != null && state == forState) { 
           country[0] = new Object();
           country[0].id = p["_test_country_name_value"];
           country[0].name =

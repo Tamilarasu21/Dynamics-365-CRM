@@ -30,6 +30,7 @@ namespace GroupCode
                                     </filter>
                                     </entity>
                                     </fetch>";
+                // RetrieveMultiple using fetchXML
                 EntityCollection retrievedContacts = service.RetrieveMultiple(new FetchExpression(fetchXML));
                 if (retrievedContacts.Entities.Count > 0)
                 {
