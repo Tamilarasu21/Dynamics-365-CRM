@@ -1,0 +1,248 @@
+<html>
+
+<head>
+    <meta />
+    <style>
+        * {
+            font-family: "Segoe UI";
+            background-color: white;
+        }
+
+        table {
+            text-align: left;
+        }
+        button{
+            background-color:none;
+            border:none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 10px;
+        }button:hover{
+            background-color: rgb(214, 214, 214);
+        }
+    </style>
+</head>
+
+<body onfocusout="parent.setEmailRange();">
+    <script src="../WebResources/ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+
+    <script>
+        var url = window.location.href;
+
+        var dataIndex = url.lastIndexOf("=") + 1;
+        var dataLength = url.length;
+        var recordData = url.slice(dataIndex, dataLength);
+        var processedRecordData = recordData
+            .replace("%20", "")
+            .replace("%7b", "")
+            .replace("%7d", "");
+
+        // fetchXML to put the condition for retrieving data
+        var fetchXml =
+            "?fetchXml=<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>" +
+            "<entity name='contact'>" +
+            "<attribute name='contactid' />" +
+            "<attribute name='fullname' />" +
+            "<attribute name='transactioncurrencyid' />" +
+            "<attribute name='preferredcontactmethodcode' />" +
+            "<attribute name='statecode' />" +
+            "<attribute name='jobtitle' />" +
+            "<order attribute='fullname' descending='false' />" +
+            "<filter type='and'>" +
+            "<condition attribute='parentcustomerid' operator='eq'  uitype='account' value='{@accountid}' />" +
+            "</filter>" +
+            "</entity>" +
+            "</fetch>";
+        fetchXml = fetchXml.replace("@accountid", processedRecordData);
+
+        // retrieve the available number of contacts
+        Xrm.WebApi.retrieveMultipleRecords("contact", fetchXml).then(
+            function success(result) {
+                var t1 =
+                    "<table id='tbl' class='display'> <thead> <tr> <th><input type='checkbox' id='checkAll' onclick='selectDeselectAll()'></th> <th>Full Name</th> <th>Currency</th> <th>Preferred Contact</th> <th>Status</th> <th>Job Title</th> <th></th> </tr></thead> <tbody> @tr </tbody> </table>";
+                var trr = "";
+
+                for (var i = 0; i < result.entities.length; i++) {
+                    trr =
+                        trr +
+                        "<tr> <td> <input type='checkbox' class='checkNumber' id='checkbox" +
+                        i +
+                        "' value='" +
+                        result.entities[i].contactid +
+                        "'> </td><td> " +
+                        result.entities[i].fullname +
+                        " </td><td> " +
+                        result.entities[i][
+                        "_transactioncurrencyid_value@OData.Community.Display.V1.FormattedValue"
+                        ] +
+                        " </td><td> " +
+                        result.entities[i][
+                        "preferredcontactmethodcode@OData.Community.Display.V1.FormattedValue"
+                        ] +
+                        " </td><td> " +
+                        result.entities[i][
+                        "statecode@OData.Community.Display.V1.FormattedValue"
+                        ] +
+                        " </td><td> " +
+                        result.entities[i].jobtitle +
+                        " </td></tr>";
+                }
+
+                t1 = t1.replace("@tr", trr);
+                document.getElementById("pp").innerHTML = t1;
+
+                //paging
+                $('#tbl').DataTable({
+                    "pageLength": 3,
+                    "pagingType": "numbers",
+                    "bLengthChange": false,
+                    "bFilter": true,
+                    "bInfo": false,
+                    "searching": false
+                });
+            },
+            function (error) {
+                console.log(error.mesage);
+            }
+        );
+
+        // select and deselect all
+        function selectDeselectAll(){
+            if($('#checkAll').prop('checked')){
+                $('#tbl').find('input[type="checkbox"]').prop('checked',true);
+            }else{
+                $('#tbl').find('input[type="checkbox"]').prop('checked',false);
+            }
+        }
+
+        // activate
+        function Activate(){
+            var checkId='';
+            var selector=$('.checkNumber:checked');
+            var i=0;
+            $(selector).each(function(){
+                i=i+1;
+                checkId=$(this).val();
+                document.getElementById('sts').innerHTML="Activation started.. Please wait";
+                UpdateRecord(checkId,0,1);
+                document.getElementById("sts").innerHTML = "Activation Process Completed.";
+            });
+        }
+
+        // deactivate 
+        function DeActivate(){
+            var checkId='';
+            var selector=$('.checkNumber:checked');
+            var i=0;
+            $(selector).each(function(){
+                i=i+1;
+                checkId=$(this).val();
+                document.getElementById('sts').innerHTML="De-Activation started.. Please wait";
+                UpdateRecord(checkId,1,0);
+                document.getElementById("sts").innerHTML = "De-Activation Process Completed.";
+            });
+        }
+
+        var globalContext = window.parent.Xrm.Utility.getGlobalContext();
+
+        // update the selected record
+        function UpdateRecord(id, status, statusreason){
+            var record={};
+            record.statecode=status;
+            record.statuscode=statusreason;
+
+            var req=new XMLHttpRequest();
+            req.open("PATCH", globalContext.getClientUrl()+"/api/data/v9.2/contacts("+id+")",false);
+            req.setRequestHeader("OData-MaxVersion","4.0");
+            req.setRequestHeader("OData-Version","4.0");
+            req.setRequestHeader("Content-Type","application/json; charset=utf-8");
+            req.setRequestHeader("Accept","application/json");
+            req.setRequestHeader("Prefer","odata.include-annotations=*");
+            req.onreadystatechange=function(){
+                if(this.readyState===4){
+                    req.onreadystatechange=null;
+                    if(this.status===204){
+                        console.log("Record status updated");
+                    }else{
+                        alert(this.responseText);
+                    }
+                }
+            };
+            req.send(JSON.stringify(record));
+        }
+
+        function UpdateCurrency(){
+            var checkId='';
+            var selector=$('.checkNumber:checked');
+            var i=0;
+            $(selector).each(function(){
+                i=i+1;
+                checkId=$(this).val();
+                document.getElementById("sts").innerHTML="currency updation started";
+                UpdateCurrencyLookupAsUSD(checkId);
+                document.getElementById('sts').innerHTML="Currency updation completed";
+            });
+        }
+
+        function UpdateCurrencyLookupAsUSD(id){
+            var cur="cf8b234e-2798-ec11-b400-000d3a300c9c";
+
+            var data={
+                "transactioncurrencyid@odata.bind":"/transactioncurrencies("+cur+")"
+            }
+
+            Xrm.WebApi.updateRecord("contact",id,data).then(
+                function success(result){
+                    alert("updated");
+                },function error(result){
+                    alert(error.message);
+                }
+            );
+        }
+
+        function UpdateJobTitle(){
+            var checkId='';
+            var selector=$('.checkNumber:checked');
+            var i=0;
+            $(selector).each(function(){
+                i=i+1;
+                checkId=$(this).val();
+                document.getElementById("sts").innerHTML="Job title updation stats";
+
+                var data={
+                    "jobtitle":$('#jobTitle').val()
+                }
+
+                Xrm.WebApi.updateRecord("contact", checkId, data).then(
+                    function success(result){
+
+                    },
+                    function error(result){
+                        alert(error.message);
+                    }
+                );
+                document.getElementById("sts").innerHTML="job title updation completed";
+            });
+        }
+    </script>
+    <h2>My Contacts</h2>
+    <table>
+        <tr>
+            <td><button onclick="window.location.reload();">&#8635; Refresh</button></td>
+            <td><button onclick="Activate()">&#9745; Activate</button></td>
+            <td><button onclick="DeActivate()">&#9746; Deactivate</button></td>
+            <td><button onclick="UpdateCurrency()">&#9998; Update Currency</button></td>
+            <td><input type="text" name="" id="jobTitle"></td>
+            <td><button onclick="UpdateJobTitle()">Update Job Title</button></td>
+        </tr>
+    </table>
+    <p id="sts"></p>
+    <p id="pp"></p>
+</body>
+
+</html>

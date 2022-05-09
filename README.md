@@ -32,3 +32,5 @@ https://docs.microsoft.com/en-us/powerapps/developer/data-platform/tutorial-writ
 https://docs.microsoft.com/en-us/dynamics365/customerengagement/on-premises/developer/download-tools-nuget?view=op-9-1
 
 https://www.c-sharpcorner.com/article/business-rules-with-actions-set-default-value-and-set-field-value-in-model-drive/
+
+https://community.dynamics.com/crm/b/mylifemicrosoftdynamiccrm/posts/ms-dynamics-crm-associate-disassociate-message-plugin#:~:text=In%20MS%20CRM%20Plugin%20Associate,have%20to%20handle%20Delete%20message.
