@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <select id="selectForm">
+    </select>
+    <script>
+        function getGender(executionContext) {
+            var formContext = executionContext.getFormContext();
+            var OptionSetControl = formContext.getAttribute(
+                "test_gender"
+            );
+            var dropDown=document.getElementById("selectForm1");
+            for (
+                var intCounter = 0;
+                intCounter < OptionSetControl.getOptions().length;
+                intCounter++
+            ) {
+                var backendValue = OptionSetControl.getOptions()[intCounter].value;
+                var backendText = OptionSetControl.getOptions()[intCounter].text;
+                var option=document.createElement("option");
+                option.text=backendText.toString();
+                option.value=backendValue.toString();
+                dropDown.options.add(option);
+                alert(backendText.toString());
+            }
+        }
+    </script>
+</body>
+
+</html>
