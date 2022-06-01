@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <link rel="stylesheet"
+        href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.min.css">
+    <link rel="stylesheet"
+        href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/css/fabric.components.min.css">
+    <script src="../WebResources/ClientGlobalContext.js.aspx" type="text/javascript"></script>
+    <script src="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-js/1.4.0/js/fabric.min.js"></script>
+    <style type="text/css">
+        .footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding-bottom: 10px;
+            padding-right: 10px;
+        }
+
+        .footerButton {
+            width: 150px;
+        }
+    </style>
+    <meta>
+    <script>
+        function fillDropdown() {
+            var req = new XMLHttpRequest();
+            req.open("GET", Xrm.Page.context.getClientUrl() + "/api/data/v9.2/EntityDefinitions(LogicalName='account')/Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$select=LogicalName&$filter=LogicalName eq 'test_deferral_payment_method'&$expand=OptionSet", true);
+            req.setRequestHeader("OData-MaxVersion", "4.0");
+            req.setRequestHeader("OData-Version", "4.0");
+            req.setRequestHeader("Accept", "application/json");
+            req.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            req.setRequestHeader("Prefer", "odata.include-annotations=\"*\"");
+            req.onreadystatechange = function () {
+                if (this.readyState === 4) {
+                    req.onreadystatechange = null;
+                    if (this.status === 200) {
+                        var results = JSON.parse(this.response);
+                        var closeReasons = document.getElementById("selectForm");
+
+                        for (var i = 0; i < results.value[0].OptionSet.Options.length; i++) {
+                            var Label = results.value[0].OptionSet.Options[i].Label.UserLocalizedLabel.Label;
+                            var Value = results.value[0].OptionSet.Options[i].Value;
+                            var option = document.createElement("option");
+                            option.text = Label;
+                            option.value = Value;
+                            closeReasons.options.add(option);
+                        }
+                        closeReasons.selectedIndex = -1;
+
+                    }
+                    // else {
+                    //     Xrm.Utility.alertDialog(this.statusText);
+                    // }
+                }
+            };
+            req.send();
+        }
+    </script>
+    <meta>
+    <meta>
+    <meta>
+</head>
+
+<body onfocusout="parent.setEmailRange();" style="overflow-wrap: break-word;" onload="fillDropdown()">
+    <form>
+        <select id="selectForm" required>
+        </select>
+        <div class="footer">
+            <button class="ms-Button ms-Button--primary footerButton" id="btnOK" onclick="">
+                <span class="ms-Button-label">OK</span>
+            </button>
+            <button class="ms-Button ms-Button--primary footerButton" id="btnCancel">
+                <span class="ms-Button-label">Cancel</span>
+            </button>
+        </div>
+    </form>
+</body>
+
+</html>
