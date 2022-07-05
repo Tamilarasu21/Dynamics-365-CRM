@@ -26,9 +26,9 @@
                 var backendValue = OptionSetControl.getOptions()[intCounter].value;
                 var backendText = OptionSetControl.getOptions()[intCounter].text;
                 var option=document.createElement("option");
-                option.text=backendText.toString();
-                option.value=backendValue.toString();
-                dropDown.options.add(option);
+                option.innerHTML=backendText;
+                option.value=backendValue;
+                dropDown.appendChild(option);
                 alert(backendText.toString());
             }
         }
